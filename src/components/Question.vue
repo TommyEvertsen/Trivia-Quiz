@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" max-width="344">
+  <v-card class="mx-auto" max-width="344" v-if="getEasyAllCategoryQuestion">
     <v-card-text>
       <div class="font-weight-black">Trivia question</div>
 
@@ -23,7 +23,7 @@
     <v-card-actions>
       <v-btn
         color="teal-accent-4"
-        text="Learn More"
+        text="Show answer"
         variant="text"
         @click="reveal = true"
       ></v-btn>
@@ -55,6 +55,8 @@
       </v-card>
     </v-expand-transition>
   </v-card>
+
+  <v-btn @click="getEasyAllCategoryQuestion">Get question</v-btn>
 </template>
 
 <script setup>
@@ -83,20 +85,21 @@ function shuffleArray(array) {
   }
   return array;
 }
-
-fetch("https://opentdb.com/api.php?amount=1&difficulty=easy")
-  .then((response) => response.json())
-  .then((data) => {
-    const trivia = data.results[0];
-    category.value = trivia.category;
-    question.value = trivia.question;
-    correctAnswer.value = trivia.correct_answer;
-    incorrectAnswers.value = trivia.incorrect_answers;
-    type.value = trivia.type;
-    difficulty.value = trivia.difficulty;
-    shuffledAnswers.value = shuffleArray([
-      ...incorrectAnswers.value,
-      correctAnswer.value,
-    ]);
-  });
+const getEasyAllCategoryQuestion = () => {
+  fetch("https://opentdb.com/api.php?amount=1&difficulty=easy")
+    .then((response) => response.json())
+    .then((data) => {
+      const trivia = data.results[0];
+      category.value = trivia.category;
+      question.value = trivia.question;
+      correctAnswer.value = trivia.correct_answer;
+      incorrectAnswers.value = trivia.incorrect_answers;
+      type.value = trivia.type;
+      difficulty.value = trivia.difficulty;
+      shuffledAnswers.value = shuffleArray([
+        ...incorrectAnswers.value,
+        correctAnswer.value,
+      ]);
+    });
+};
 </script>
